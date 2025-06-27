@@ -6,7 +6,7 @@ import "./globals.css";
 
 export const metadata = {
   title: "Asisten Guru Cerdas",
-  description: "by Netila @Ronie_Ri.2025",
+  description: "by @Ronie_Ri.2025",
 };
 
 export default function RootLayout({ children }) {

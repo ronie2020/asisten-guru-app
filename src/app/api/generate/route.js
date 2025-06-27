@@ -27,8 +27,8 @@ const prompt = `
 
     Tolong hasilkan empat bagian berikut, dan pisahkan setiap bagian HANYA dengan pemisah unik yang saya tentukan.
 
-    Bagian 1: RPP Ringkas.
-    Format: Tujuan Pembelajaran, Kegiatan Pembelajaran (Pendahuluan, Inti, Penutup), Poin Materi Utama.
+    Bagian 1: RPP mengacu pada kurikulum terbaru yang ada di indonesia dengan memasukan komponen pembelajaran Mendalam didalamnya.
+    Format: Tujuan Pembelajaran, Kegiatan Pembelajaran (Pendahuluan, Inti, Penutup), pisahkan per bagian, Poin Materi Utama.
 
     [---SEPARATOR_RPP---]
 
@@ -38,12 +38,12 @@ const prompt = `
     Indikator Soal: [Indikator Soal yang jelas]
     Level Kognitif: [C1, C2, C3, dst.]
     Bentuk Soal: [Pilihan Ganda atau Esai]
-    Pisahkan setiap soal dengan baris baru.
+    Pisahkan setiap soal dengan baris baru. 
 
     [---SEPARATOR_KISI---]
 
     Bagian 3: Soal Evaluasi.
-    Buat 15 soal (10 Pilihan Ganda dengan opsi a,b,c,d dan 5 Esai) berdasarkan kisi-kisi. Sertakan Kunci Jawaban di bagian akhir.
+    Buat 15 soal (10 Pilihan Ganda dengan opsi a,b,c,d dan 5 Esai) berdasarkan kisi-kisi. buatkan format soal dengan mengacu pada soal Hots, Sertakan Kunci Jawaban di bagian akhir.
 
     [---SEPARATOR_SOAL---]
     
