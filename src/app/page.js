@@ -153,30 +153,32 @@ const handleCopy = (text, itemName) => {
   <div className={styles.tabContent}>
   <div className={styles.contentWrapper}>
     {/* Tombol Salin akan ditempatkan di sini, di atas kontennya */}
-    {activeTab === 'rpp' && (
-      <>
-        <button onClick={() => handleCopy(hasil.rpp, 'rpp')} className={styles.copyButton} title="Salin Teks">
-          {copiedItem === 'rpp' ? <FaCheck color="green" /> : <FaCopy />}
-        </button>
-        <ReactMarkdown>{hasil.rpp}</ReactMarkdown>
-      </>
-    )}
-      {activeTab === 'kisiKisi' && (
-        <>
-          <button onClick={() => handleCopy(hasil.kisiKisi, 'kisiKisi')} className={styles.copyButton}>
-            {copiedItem === 'kisiKisi' ? '✅ Tersalin!' : 'Salin Teks'}
-          </button>
-          <KisiKisiTable text={hasil.kisiKisi} /> 
-        </>
+      {activeTab === 'rpp' && (
+          <>
+              <button onClick={() => handleCopy(hasil.rpp, 'rpp')} className={styles.copyButton} title="Salin Teks">
+                  {copiedItem === 'rpp' ? <FaCheck color="green" /> : <FaCopy />}
+              </button>
+              <ReactMarkdown>{hasil.rpp}</ReactMarkdown>
+          </>
       )}
-    {activeTab === 'soal' && (
-      <>
-        <button onClick={() => handleCopy(hasil.soal, 'soal')} className={styles.copyButton}>
-          {copiedItem === 'soal' ? '✅ Tersalin!' : 'Salin Teks'}
-        </button>
-        <ReactMarkdown>{hasil.soal}</ReactMarkdown>
-      </>
-    )}
+
+      {activeTab === 'kisiKisi' && (
+          <>
+              <button onClick={() => handleCopy(hasil.kisiKisi, 'kisiKisi')} className={styles.copyButton} title="Salin Teks">
+                  {copiedItem === 'kisiKisi' ? <FaCheck color="green" /> : <FaCopy />}
+              </button>
+              <KisiKisiTable text={hasil.kisiKisi} />
+          </>
+      )}
+
+      {activeTab === 'soal' && (
+          <>
+              <button onClick={() => handleCopy(hasil.soal, 'soal')} className={styles.copyButton} title="Salin Teks">
+                  {copiedItem === 'soal' ? <FaCheck color="green" /> : <FaCopy />}
+              </button>
+              <ReactMarkdown>{hasil.soal}</ReactMarkdown>
+          </>
+      )}
   </div>
 </div>
     </div>
