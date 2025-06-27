@@ -6,7 +6,8 @@ import { useState } from 'react';
 import styles from './page.module.css'; // Anda bisa sesuaikan styling nanti
 import ReactMarkdown from 'react-markdown'; // <-- TAMBAHKAN IMPORT INI
 import KisiKisiTable from '../components/KisiKisiTable'; // <-- import komponen KisiKisiTable
-import { generateDocx } from '../utils/docx-generator.js'; // <--Import untuk fungsi generateDocx
+import { generateRppDocx, generateMateriDocx, generateEvaluasiDocx } from '../utils/docx-generator.js';
+import { FaCopy, FaCheck } from 'react-icons/fa'; // <-- TAMBAHKAN IMPORT INI
 
 export default function Home() {
   // State untuk menyimpan input dari form
@@ -139,20 +140,24 @@ const handleCopy = (text, itemName) => {
 {/* Letakkan tombol download di sini, hanya muncul jika ada hasil */}
 {hasil && (
     <div className={styles.downloadSection}>
-        <button onClick={() => generateDocx(hasil.rpp, hasil.kisiKisi, hasil.soal)} className={styles.downloadButton}>
-            📄 Download sebagai .docx
+        <button onClick={() => generateRppDocx(hasil.rpp)} className={styles.downloadButton}>
+            📄 Download RPP
+        </button>
+        <button onClick={() => generateMateriDocx(hasil.materi)} className={styles.downloadButton}>
+            📚 Download Materi
+        </button>
+        <button onClick={() => generateEvaluasiDocx(hasil.kisiKisi, hasil.soal)} className={styles.downloadButton}>
+            📝 Download Evaluasi
         </button>
     </div>
 )}
-
-
   <div className={styles.tabContent}>
   <div className={styles.contentWrapper}>
     {/* Tombol Salin akan ditempatkan di sini, di atas kontennya */}
     {activeTab === 'rpp' && (
       <>
-        <button onClick={() => handleCopy(hasil.rpp, 'rpp')} className={styles.copyButton}>
-          {copiedItem === 'rpp' ? '✅ Tersalin!' : 'Salin Teks'}
+        <button onClick={() => handleCopy(hasil.rpp, 'rpp')} className={styles.copyButton} title="Salin Teks">
+          {copiedItem === 'rpp' ? <FaCheck color="green" /> : <FaCopy />}
         </button>
         <ReactMarkdown>{hasil.rpp}</ReactMarkdown>
       </>

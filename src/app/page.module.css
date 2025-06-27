@@ -168,17 +168,30 @@
 
 .copyButton {
   position: absolute;
-  top: -10px; /* Sedikit di atas konten */
-  right: 0;
-  background-color: #e9ecef;
+  top: 1rem;
+  right: 1rem;
+  background-color: #f8f9fa;
   color: #495057;
   border: 1px solid #dee2e6;
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: bold;
+  padding: 0.5rem; /* Padding dibuat sama sisi */
+  border-radius: 50%; /* Membuat tombol menjadi bulat */
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+  font-size: 1rem; /* Mengatur ukuran ikon */
+  width: 40px; /* Lebar dan tinggi dibuat sama */
+  height: 40px;
+  display: flex; /* Agar ikon berada di tengah */
+  align-items: center;
+  justify-content: center;
+}
+
+.copyButton:hover {
+  background-color: #e9ecef;
+  transform: scale(1.1);
+}
+
+.copyButton:active {
+  transform: scale(0.95);
 }
 
 .copyButton:hover {
@@ -221,6 +234,9 @@
 .downloadSection {
   margin-top: 2rem;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
 }
 
 .downloadButton {

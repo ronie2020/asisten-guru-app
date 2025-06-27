@@ -6,7 +6,7 @@ import "./globals.css";
 
 export const metadata = {
   title: "Asisten Guru Cerdas",
-  description: "by Roni Rodiana, SMP Negeri 3 Lakbok Ri.2025",
+  description: "by Netila @Ronie_Ri.2025",
 };
 
 export default function RootLayout({ children }) {
