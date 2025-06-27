@@ -238,3 +238,58 @@
 .downloadButton:hover {
   background-color: #1665c4;
 }
+
+/* ================================== */
+/* --- ATURAN UNTUK TAMPILAN MOBILE --- */
+/* Aturan ini akan berlaku jika lebar layar 768px atau kurang */
+/* ================================== */
+@media (max-width: 768px) {
+
+  /* 1. Perkecil padding di kontainer utama agar tidak terlalu makan tempat */
+  .main {
+    padding: 2rem 1rem;
+  }
+
+  /* 2. Perkecil ukuran font judul agar tidak terlalu besar */
+  .title {
+    font-size: 2.2rem;
+    line-height: 1.2;
+  }
+
+  .description {
+    font-size: 1rem;
+  }
+
+  /* 3. Atur agar form mengisi lebar layar dengan sedikit jarak */
+  .form {
+    width: 100%;
+  }
+
+  /* 4. Atur agar kontainer hasil tidak terlalu lebar */
+  .resultsContainer {
+    width: 100%;
+  }
+
+  /* 5. Ini PENTING: Buat baris Tab bisa di-scroll horizontal jika tidak muat */
+  .tabs {
+    overflow-x: auto;
+    /* Kode di bawah ini untuk menyembunyikan scrollbar agar lebih rapi */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  .tabs::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+
+  /* 6. Perkecil sedikit padding di dalam tombol tab */
+  .tabs button {
+    padding: 0.8rem 1.2rem;
+    white-space: nowrap; /* Mencegah teks tombol patah ke bawah */
+  }
+
+  /* 7. Perkecil padding di dalam konten tab */
+  .tabContent {
+    padding: 1rem;
+  }
+}

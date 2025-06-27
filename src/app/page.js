@@ -71,8 +71,9 @@ const handleCopy = (text, itemName) => {
         <h1 className={styles.title}>
           🚀 Asisten Guru Cerdas
           <br />
-          SMP NEGERI 3 LAKBOK 
-        </h1>
+          <p className={styles.subtitle}>SMPN 3 LAKBOK</p>
+                 
+        </h1>        
 
         <p className={styles.description}>
           Buat RPP, Kisi-Kisi, dan Soal Evaluasi dalam hitungan menit.
