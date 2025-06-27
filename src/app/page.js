@@ -71,9 +71,8 @@ const handleCopy = (text, itemName) => {
       <main className={styles.main}>
         <h1 className={styles.title}>
           🚀 Asisten Guru Cerdas
-          <br />
-          <p className={styles.subtitle}>SMPN 3 LAKBOK</p>
-                 
+          <br />      
+                
         </h1>        
 
         <p className={styles.description}>
