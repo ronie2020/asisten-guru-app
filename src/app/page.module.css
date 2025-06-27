@@ -1,0 +1,240 @@
+/* Lokasi file: app/page.module.css */
+
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4rem;
+  min-height: 100vh;
+}
+
+.title {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.description {
+  font-size: 1.2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 600px;
+  gap: 1rem;
+}
+
+.form input {
+  padding: 0.8rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.form button {
+  padding: 0.8rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #0070f3;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.form button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.form button:hover:not(:disabled) {
+  background-color: #005bb5;
+}
+
+.results {
+  margin-top: 3rem;
+  width: 100%;
+  max-width: 800px;
+  border: 1px solid #eaeaea;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.resultCard {
+  padding: 1.5rem;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.resultCard:last-child {
+  border-bottom: none;
+}
+
+.resultCard h2 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.resultCard pre {
+  white-space: pre-wrap; /* Agar teks tidak keluar dari box */
+  word-wrap: break-word;
+  font-family: 'Courier New', Courier, monospace;
+  background-color: #f9f9f9;
+  padding: 1rem;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.error {
+    color: red;
+    margin-top: 1rem;
+}
+
+/* Tambahkan di akhir file page.module.css */
+.markdownOutput {
+  line-height: 1.7;
+}
+
+.markdownOutput h1,
+.markdownOutput h2,
+.markdownOutput h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.markdownOutput ul,
+.markdownOutput ol {
+  padding-left: 2rem;
+}
+
+.markdownOutput p {
+  margin-bottom: 1rem;
+}
+
+/* Styling untuk Tab */
+.resultsContainer {
+  margin-top: 3rem;
+  width: 100%;
+  max-width: 800px;
+  border: 1px solid #eaeaea;
+  border-radius: 10px;
+}
+
+.tabs {
+  display: flex;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #eaeaea;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.tabs button {
+  padding: 1rem 1.5rem;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.tabs button.activeTab {
+  color: #0070f3;
+  font-weight: bold;
+  box-shadow: inset 0 -2px 0 #0070f3;
+}
+
+.tabContent {
+  padding: 1.5rem;
+  line-height: 1.7;
+}
+
+/* Hapus styling .results dan .resultCard yang lama karena sudah diganti */
+
+/* Tambahkan di akhir file page.module.css */
+
+.contentWrapper {
+  position: relative; /* Ini penting untuk posisi tombol */
+}
+
+.copyButton {
+  position: absolute;
+  top: -10px; /* Sedikit di atas konten */
+  right: 0;
+  background-color: #e9ecef;
+  color: #495057;
+  border: 1px solid #dee2e6;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.copyButton:hover {
+  background-color: #ced4da;
+}
+
+.copyButton:active {
+  transform: scale(0.98);
+}
+
+/* Tambahkan di akhir file page.module.css */
+
+.tableContainer {
+  overflow-x: auto; /* Agar tabel bisa di-scroll horizontal di layar kecil */
+}
+
+.kisiKisiTable {
+  width: 100%;
+  border-collapse: collapse; /* Menghilangkan jarak antar border */
+  margin-top: 1rem;
+}
+
+.kisiKisiTable th,
+.kisiKisiTable td {
+  border: 1px solid #dee2e6;
+  padding: 0.8rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.kisiKisiTable th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+.kisiKisiTable tbody tr:nth-child(odd) {
+  background-color: #fdfdfd; /* Efek zebra-striping */
+}
+
+.downloadSection {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.downloadButton {
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.downloadButton:hover {
+  background-color: #1665c4;
+}
