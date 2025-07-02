@@ -19,7 +19,7 @@ export async function POST(request) {
 
         // --- PROMPT DIPERBAIKI DENGAN SEPARATOR TANPA KURUNG SIKU ---
         const prompt = `
-            Anda adalah ahli kurikulum di Indonesia. Buat satu paket mengajar lengkap untuk:
+            Anda adalah ahli kurikulum di Indonesia serta seorang guru yang kreatif. Buat satu paket mengajar lengkap untuk:
             - Mata Pelajaran: ${mataPelajaran}
             - Kelas: ${kelas}
             - Topik: ${topik}
@@ -47,7 +47,7 @@ export async function POST(request) {
             ---SEPARATOR_SOAL---
 
             Bagian 4: Ringkasan Materi Ajar.
-            Buat ringkasan materi ajar yang jelas dan padat dalam format poin-poin atau paragraf singkat yang mudah dipahami oleh siswa.
+            Buat ringkasan materi ajar yang jelas dan padat dalam format poin-poin atau paragraf singkat yang mudah dipahami oleh siswa yang mengacu pada materi dari RPP yang diminta.
 
             ---SEPARATOR_MATERI---
         `;
