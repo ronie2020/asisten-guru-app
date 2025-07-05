@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "@microsoft/fetch-event-source": "^2.0.1",
     "docx": "^9.5.1",
     "file-saver": "^2.0.5",
     "geist": "^1.4.2",
