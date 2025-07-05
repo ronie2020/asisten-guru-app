@@ -38,7 +38,7 @@ export default function Home() {
         setRpp(''); setLkpd(''); setKisiKisi(''); setSoal(''); setMateri('');
         setActiveTab('rpp');
 
-        // Objek pemetaan yang sudah benar
+        // Objek pemetaan yang sudah benar dan konsisten
         const setters = {
             rpp: setRpp,
             lkpd: setLkpd,
