@@ -4,56 +4,72 @@ import React, { useMemo } from 'react';
 import styles from '../app/page.module.css';
 
 /**
- * Komponen ini sekarang bertugas mem-parsing string JSON
- * dan menampilkannya dalam format kartu vertikal yang mudah dibaca.
+ * Komponen ini sekarang bertugas mem-parsing string JSON dari AI
+ * dan menampilkannya sebagai tabel HTML yang rapi, sama seperti di file unduhan.
  */
 const VerticalKisiKisi = ({ text }) => {
-  const parsedData = useMemo(() => {
-    if (!text || typeof text !== 'string') return [];
+  const tableData = useMemo(() => {
+    if (!text || typeof text !== 'string') return null;
     
     try {
-      // Logika untuk secara cerdas menemukan dan mem-parsing JSON di dalam teks
+      // Logika cerdas untuk menemukan dan mengekstrak JSON dari dalam teks
       const startIndex = text.indexOf('[');
       const endIndex = text.lastIndexOf(']');
 
       if (startIndex > -1 && endIndex > -1) {
         const jsonString = text.substring(startIndex, endIndex + 1);
         const data = JSON.parse(jsonString);
-        return Array.isArray(data) ? data : [];
+        
+        if (!Array.isArray(data) || data.length === 0) return null;
+
+        // Ambil header dari kunci (keys) objek pertama di dalam array
+        const headers = Object.keys(data[0]);
+        // Ambil baris data (values) dari setiap objek
+        const rows = data.map(item => Object.values(item));
+
+        return { headers, rows };
       }
       
-      return []; // Kembalikan array kosong jika tidak ada JSON yang ditemukan
+      return null; // Kembalikan null jika tidak ada JSON yang ditemukan
 
     } catch (error) {
       console.error("Gagal mem-parsing JSON untuk kisi-kisi:", text, error);
-      // Fallback jika string yang diekstrak ternyata tetap tidak valid
-      return [{ error: "Format data kisi-kisi dari AI tidak valid." }];
+      // Fallback jika terjadi error, tampilkan teks mentah agar bisa di-debug
+      return { error: text };
     }
   }, [text]);
 
-  // Jangan tampilkan apa-apa jika data masih kosong
-  if (parsedData.length === 0) {
+  // Jangan tampilkan apa-apa jika data masih kosong atau belum valid
+  if (!tableData) {
     return <p>Menunggu data kisi-kisi...</p>;
   }
 
   // Tampilkan pesan error jika parsing gagal
-  if (parsedData[0]?.error) {
-    return <p className={styles.error}>{parsedData[0].error}</p>;
+  if (tableData.error) {
+    return <pre>{tableData.error}</pre>;
   }
 
-  // Render data dalam format kartu vertikal per soal
+  // Render data menjadi tabel HTML
   return (
-    <div>
-      {parsedData.map((row, index) => (
-        <div key={index} className={styles.kisiKisiCard}>
-          {Object.entries(row).map(([key, value]) => (
-            <div key={key} className={styles.kisiKisiRow}>
-              <strong className={styles.kisiKisiLabel}>{key}:</strong>
-              <span>{value}</span>
-            </div>
+    <div className={styles.tableContainer}>
+      <table className={styles.kisiKisiTable}>
+        <thead>
+          <tr>
+            {tableData.headers.map((header, index) => (
+              <th key={index}>{header}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {tableData.rows.map((row, rowIndex) => (
+            <tr key={rowIndex}>
+              {row.map((cell, cellIndex) => (
+                <td key={cellIndex}>{cell}</td>
+              ))}
+            </tr>
           ))}
-        </div>
-      ))}
+        </tbody>
+      </table>
     </div>
   );
 };

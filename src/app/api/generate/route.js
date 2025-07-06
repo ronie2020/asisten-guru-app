@@ -14,16 +14,13 @@ function AIStream(stream) {
             const encoder = new TextEncoder();
             let buffer = '';
             
-            // Definisikan urutan bagian konten yang diharapkan
             const sections = ['RPP', 'LKPD', 'KISI', 'SOAL', 'MATERI'];
             let sectionIndex = 0;
 
-            // Menggunakan for await...of, cara yang paling andal untuk membaca stream dari Google AI
+            // Menggunakan for await...of, cara yang paling andal untuk membaca stream
             for await (const chunk of stream) {
-                // Tambahkan potongan data baru ke buffer
                 buffer += chunk.text();
 
-                // Loop untuk memproses buffer selama masih ada kemungkinan menemukan bagian lengkap
                 let separatorFoundInLoop = true;
                 while (separatorFoundInLoop) {
                     if (sectionIndex >= sections.length) {
@@ -38,26 +35,22 @@ function AIStream(stream) {
                     const startIndex = buffer.indexOf(startTag);
                     const endIndex = buffer.indexOf(endTag);
 
-                    // Hanya proses jika tag pembuka dan penutup LENGKAP ditemukan di buffer
                     if (startIndex !== -1 && endIndex !== -1 && startIndex < endIndex) {
-                        // Ekstrak konten yang berada di antara tag
-                        const content = buffer.substring(startIndex + startTag.length, endIndex).trim();
+                        const contentBlock = buffer.substring(startIndex, endIndex);
                         
-                        // Tentukan tipe data untuk dikirim ke frontend
-                        let type = currentSectionName.toLowerCase();
-                        if (type === 'kisi') type = 'kisiKisi'; // Perbaikan: Gunakan nama yang konsisten
+                        // --- INI PERBAIKAN UTAMANYA ---
+                        // Membersihkan teks dari tag MULAI sebelum mengirim
+                        const cleanContent = contentBlock.replace(startTag, '').trim();
 
-                        // Buat payload JSON dan kirim sebagai event
-                        const payload = { type: type, data: content };
+                        let type = currentSectionName.toLowerCase();
+                        if (type === 'kisi') type = 'kisiKisi';
+
+                        const payload = { type: type, data: cleanContent };
                         controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
                         
-                        // Buang bagian yang sudah diproses dari buffer
                         buffer = buffer.substring(endIndex + endTag.length);
-                        
-                        // Lanjut ke bagian berikutnya
                         sectionIndex++;
                     } else {
-                        // Bagian lengkap belum ditemukan, tunggu data stream berikutnya
                         separatorFoundInLoop = false;
                     }
                 }
@@ -74,16 +67,13 @@ export async function POST(request) {
         
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         
-        // Prompt final yang menggunakan tag MULAI dan SELESAI serta meminta JSON untuk Kisi-Kisi
-        const prompt = `Buat satu paket mengajar lengkap untuk: Mata Pelajaran: ${mataPelajaran}, Kelas: ${kelas}, Topik: ${topik}. Hasilnya HARUS terdiri dari LIMA bagian yang dipisahkan dengan separator unik.---KONTEN_RPP_MULAI---[Di sini isi Bagian 1: RPP Ringkas, masukan elemen pembelajaran mendalam dan profil pelajar pancasila.]---KONTEN_RPP_SELESAI--- ---KONTEN_LKPD_MULAI---[Di sini isi Bagian 2: LKPD]---KONTEN_LKPD_SELESAI--- ---KONTEN_KISI_MULAI---[Di sini isi Bagian 3: Kisi-Kisi Soal dengan jumlah soal 15 terdiri dari 10 PG dan 5 Essai. PENTING: Hasilkan dalam format JSON array yang valid saja, tanpa teks atau penjelasan tambahan. Contoh: [{"No.": "1", "Kompetensi Dasar (KD)": "...", ...}]]---KONTEN_KISI_SELESAI--- ---KONTEN_SOAL_MULAI---[Di sini isi Bagian 4: Soal Evaluasi, buat soal dengan format soal HOTS dan lampirkan seluruh jawaban dan penjelasan.]---KONTEN_SOAL_SELESAI--- ---KONTEN_MATERI_MULAI---[Di sini isi Bagian 5: Ringkasan Materi Ajar, buat ringkas dan lengkap, buat per poin penting]---KONTEN_MATERI_SELESAI---`;
+        const prompt = `Buat satu paket mengajar lengkap untuk: Mata Pelajaran: ${mataPelajaran}, Kelas: ${kelas}, Topik: ${topik}. Hasilnya HARUS terdiri dari LIMA bagian yang dipisahkan dengan separator unik.---KONTEN_RPP_MULAI---[Di sini isi Bagian 1: RPP Ringkas, pembelajaran mendalam dan profil pelajar pancasila yang relevan dengan materi.]---KONTEN_RPP_SELESAI--- ---KONTEN_LKPD_MULAI---[Di sini isi Bagian 2: LKPD]---KONTEN_LKPD_SELESAI--- ---KONTEN_KISI_MULAI---[Di sini isi Bagian 3: Kisi-Kisi Soal, buat 15 soal terdiri dari 10 PG dan 5 essai. PENTING: Hasilkan dalam format JSON array yang valid saja, tanpa teks atau penjelasan tambahan. Contoh: [{"No.": "1", "Kompetensi Dasar (KD)": "...", ...}]]---KONTEN_KISI_SELESAI--- ---KONTEN_SOAL_MULAI---[Di sini isi Bagian 4: Soal Evaluasi, gunakan format soal Hots literasi dan numerasi, buatkan jawaban dan penjelasan di halaman selanjutnya.]---KONTEN_SOAL_SELESAI--- ---KONTEN_MATERI_MULAI---[Di sini isi Bagian 5: Ringkasan Materi Ajar, terdiri dari poin-poin penting pembelajaran.]---KONTEN_MATERI_SELESAI---`;
 
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-        // Hapus baris baru dari prompt untuk stabilitas
         const result = await model.generateContentStream(prompt.replace(/(\r\n|\n|\r)/gm, ""));
         
         const stream = AIStream(result.stream);
         
-        // Mengirim response dengan header yang benar untuk Server-Sent Events (SSE)
         return new Response(stream, {
             headers: { 
                 'Content-Type': 'text/event-stream',
