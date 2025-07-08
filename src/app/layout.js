@@ -14,6 +14,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${GeistSans.variable} ${GeistMono.variable} antialiased`} suppressHydrationWarning={true}>
         {children}
+        <Analytics /> {/* <-- 2. Letakkan komponen ini di sini */}
       </body>
     </html>
   );
