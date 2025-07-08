@@ -1,27 +1,67 @@
-/* Lokasi file: app/page.module.css */
+/* src/app/page.module.css */
 
+/* --- Kontainer Utama --- */
 .main {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
-  padding: 4rem;
+  padding: 4rem 1rem; /* Padding disesuaikan untuk mobile */
   min-height: 100vh;
+  background-color: #f8f9fa; /* Latar belakang abu-abu sangat terang */
 }
 
+/* --- Tipografi --- */
 .title {
-  font-size: 3rem;
+  font-size: 2.8rem;
+  font-weight: 700; /* Dibuat lebih tebal */
   margin-bottom: 0.5rem;
   line-height: 1.15;
   text-align: center;
+  color: #212529; /* Warna teks lebih gelap */
 }
 
 .description {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem; /* Jarak ke bawah lebih besar */
+  color: #6c757d; /* Warna deskripsi sedikit lebih lembut */
 }
 
+/* --- Tombol Pilihan Mode --- */
+.modeSelector {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+  background-color: #e9ecef;
+  border-radius: 10px; /* Dibuat lebih bulat */
+  padding: 0.4rem;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.modeButton {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  background-color: transparent;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.modeButton.activeMode {
+  background-color: #ffffff;
+  color: #0d6efd; /* Warna biru primer */
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* --- Form Input --- */
 .form {
   display: flex;
   flex-direction: column;
@@ -31,109 +71,92 @@
 }
 
 .form input {
-  padding: 0.8rem 1rem;
-  border: 1px solid #ddd;
+  padding: 1rem;
+  border: 1px solid #dee2e6;
   border-radius: 8px;
   font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+.form input:focus {
+  outline: none;
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Tombol Generate Utama */
 .form button {
-  padding: 0.8rem 1rem;
+  padding: 1rem;
   border: none;
   border-radius: 8px;
-  background-color: #0070f3;
+  background-image: linear-gradient(to right, #0d6efd, #0d63e4);
   color: white;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.form button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(13, 110, 253, 0.2);
 }
 
 .form button:hover:not(:disabled) {
-  background-color: #005bb5;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(13, 110, 253, 0.3);
 }
 
-.results {
-  margin-top: 3rem;
+.form button:disabled {
+  background: #ced4da;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* --- Tombol Download --- */
+.downloadSection {
+  margin-top: 2.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
   width: 100%;
   max-width: 800px;
-  border: 1px solid #eaeaea;
-  border-radius: 10px;
-  overflow: hidden;
 }
 
-.resultCard {
-  padding: 1.5rem;
-  border-bottom: 1px solid #eaeaea;
-}
-
-.resultCard:last-child {
-  border-bottom: none;
-}
-
-.resultCard h2 {
-  margin-top: 0;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.resultCard pre {
-  white-space: pre-wrap; /* Agar teks tidak keluar dari box */
-  word-wrap: break-word;
-  font-family: 'Courier New', Courier, monospace;
-  background-color: #f9f9f9;
-  padding: 1rem;
-  border-radius: 5px;
+.downloadButton {
+  background-color: #198754; /* Warna hijau untuk download */
+  color: white;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
   font-size: 0.9rem;
-  line-height: 1.6;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.error {
-    color: red;
-    margin-top: 1rem;
+.downloadButton:hover {
+  background-color: #157347;
+  transform: translateY(-2px);
 }
 
-/* Tambahkan di akhir file page.module.css */
-.markdownOutput {
-  line-height: 1.7;
-}
-
-.markdownOutput h1,
-.markdownOutput h2,
-.markdownOutput h3 {
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.markdownOutput ul,
-.markdownOutput ol {
-  padding-left: 2rem;
-}
-
-.markdownOutput p {
-  margin-bottom: 1rem;
-}
-
-/* Styling untuk Tab */
+/* --- Area Hasil --- */
 .resultsContainer {
-  margin-top: 3rem;
+  margin-top: 2rem;
   width: 100%;
   max-width: 800px;
-  border: 1px solid #eaeaea;
-  border-radius: 10px;
+  border: none;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+  overflow: hidden; /* Agar sudut tab ikut melengkung */
 }
 
 .tabs {
   display: flex;
-  background-color: #f9f9f9;
-  border-bottom: 1px solid #eaeaea;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  overflow-x: auto;
 }
 
 .tabs button {
@@ -142,45 +165,41 @@
   background-color: transparent;
   cursor: pointer;
   font-size: 1rem;
-  font-weight: 500;
-  color: #666;
+  font-weight: 600;
+  color: #6c757d;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .tabs button.activeTab {
-  color: #0070f3;
-  font-weight: bold;
-  box-shadow: inset 0 -2px 0 #0070f3;
+  color: #0d6efd;
+  box-shadow: inset 0 -3px 0 #0d6efd;
 }
 
 .tabContent {
   padding: 1.5rem;
-  line-height: 1.7;
 }
 
-/* Hapus styling .results dan .resultCard yang lama karena sudah diganti */
-
-/* Tambahkan di akhir file page.module.css */
-
+/* --- Styling lainnya (SUDAH DILENGKAPI) --- */
 .contentWrapper {
-  position: relative; /* Ini penting untuk posisi tombol */
+  position: relative;
 }
 
 .copyButton {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background-color: #f8f9fa;
+  top: -10px;
+  right: 0;
+  background-color: #f1f3f5;
   color: #495057;
   border: 1px solid #dee2e6;
-  padding: 0.5rem; /* Padding dibuat sama sisi */
-  border-radius: 50%; /* Membuat tombol menjadi bulat */
+  padding: 0.5rem;
+  border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-  font-size: 1rem; /* Mengatur ukuran ikon */
-  width: 40px; /* Lebar dan tinggi dibuat sama */
+  font-size: 1rem;
+  width: 40px;
   height: 40px;
-  display: flex; /* Agar ikon berada di tengah */
+  display: flex;
   align-items: center;
   justify-content: center;
 }
@@ -190,27 +209,33 @@
   transform: scale(1.1);
 }
 
-.copyButton:active {
-  transform: scale(0.95);
+.kisiKisiCard {
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: #f8f9fa;
 }
 
-.copyButton:hover {
-  background-color: #ced4da;
+.kisiKisiRow {
+  display: flex;
+  margin-bottom: 0.5rem;
 }
 
-.copyButton:active {
-  transform: scale(0.98);
+.kisiKisiLabel {
+  flex-basis: 150px;
+  min-width: 150px;
+  font-weight: 600;
+  color: #495057;
 }
-
-/* Tambahkan di akhir file page.module.css */
 
 .tableContainer {
-  overflow-x: auto; /* Agar tabel bisa di-scroll horizontal di layar kecil */
+  overflow-x: auto;
 }
 
 .kisiKisiTable {
   width: 100%;
-  border-collapse: collapse; /* Menghilangkan jarak antar border */
+  border-collapse: collapse;
   margin-top: 1rem;
 }
 
@@ -223,122 +248,30 @@
 }
 
 .kisiKisiTable th {
-  background-color: #f8f9fa;
+  background-color: #f1f3f5;
   font-weight: bold;
 }
 
-.kisiKisiTable tbody tr:nth-child(odd) {
-  background-color: #fdfdfd; /* Efek zebra-striping */
+.error {
+    color: #dc3545; /* Warna merah untuk error */
+    margin-top: 1rem;
+    font-weight: 500;
+    background-color: #f8d7da;
+    border: 1px solid #f5c2c7;
+    padding: 1rem;
+    border-radius: 8px;
 }
 
-.downloadSection {
-  margin-top: 2rem;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
 
-.downloadButton {
-  background-color: #1a73e8;
-  color: white;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.downloadButton:hover {
-  background-color: #1665c4;
-}
-
-/* ================================== */
-/* --- ATURAN UNTUK TAMPILAN MOBILE --- */
-/* Aturan ini akan berlaku jika lebar layar 768px atau kurang */
-/* ================================== */
+/* --- Aturan untuk Tampilan Mobile --- */
 @media (max-width: 768px) {
-
-  /* 1. Perkecil padding di kontainer utama agar tidak terlalu makan tempat */
   .main {
     padding: 2rem 1rem;
   }
-
-  /* 2. Perkecil ukuran font judul agar tidak terlalu besar */
   .title {
     font-size: 2.2rem;
-    line-height: 1.2;
   }
-
-  .description {
-    font-size: 1rem;
-  }
-
-  /* 3. Atur agar form mengisi lebar layar dengan sedikit jarak */
-  .form {
+  .form, .modeSelector, .resultsContainer, .downloadSection {
     width: 100%;
   }
-
-  /* 4. Atur agar kontainer hasil tidak terlalu lebar */
-  .resultsContainer {
-    width: 100%;
-  }
-
-  /* 5. Ini PENTING: Buat baris Tab bisa di-scroll horizontal jika tidak muat */
-  .tabs {
-    overflow-x: auto;
-    /* Kode di bawah ini untuk menyembunyikan scrollbar agar lebih rapi */
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
-
-  .tabs::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
-  }
-
-  /* 6. Perkecil sedikit padding di dalam tombol tab */
-  .tabs button {
-    padding: 0.8rem 1.2rem;
-    white-space: nowrap; /* Mencegah teks tombol patah ke bawah */
-  }
-
-  /* 7. Perkecil padding di dalam konten tab */
-  .tabContent {
-    padding: 1rem;
-  }
-}
-
-/* --- STYLE UNTUK TOMBOL PILIHAN MODE --- */
-
-.modeSelector {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 2rem;
-  background-color: #e9ecef;
-  border-radius: 8px;
-  padding: 0.3rem;
-  width: 100%;
-  max-width: 600px;
-}
-
-.modeButton {
-  flex: 1;
-  padding: 0.75rem 1rem;
-  border: none;
-  background-color: transparent;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #495057;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  text-align: center;
-}
-
-.modeButton.activeMode {
-  background-color: #ffffff;
-  color: #0070f3;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
