@@ -263,6 +263,49 @@
 }
 
 
+/* Tambahkan di akhir file page.module.css */
+.videoContainer {
+  display: grid;
+  gap: 1rem;
+}
+
+.videoCard {
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1rem;
+  background-color: #fff;
+}
+
+.videoTitle {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+  color: #212529;
+}
+
+.videoDesc {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-bottom: 1rem;
+}
+
+.videoLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #FF0000;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.videoLink:hover {
+  background-color: #c40000;
+}
+
 /* --- Aturan untuk Tampilan Mobile --- */
 @media (max-width: 768px) {
   .main {

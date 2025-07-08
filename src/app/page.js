@@ -7,7 +7,7 @@ import styles from './page.module.css';
 import { FaCopy, FaCheck } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import VerticalKisiKisi from '../components/VerticalKisiKisi';
-// Impor semua fungsi download, termasuk yang baru
+import VideoRecommendations from '../components/VideoRecommendations';
 import { 
     generateRppDocx, 
     generateMateriDocx, 
@@ -18,33 +18,33 @@ import {
 } from '../utils/docx-generator.js';
 
 export default function Home() {
-    // State untuk mode aplikasi
-    const [mode, setMode] = useState('harian'); // 'harian' atau 'tahunan'
-
-    // State untuk form
+    // --- STATE ---
+    const [mode, setMode] = useState('harian');
     const [mataPelajaran, setMataPelajaran] = useState('');
     const [kelas, setKelas] = useState('');
     const [topik, setTopik] = useState('');
-
-    // State untuk loading dan error
+    const [subtopik, setSubtopik] = useState(''); // State baru untuk Sub-Topik
+    const [jumlahPertemuan, setJumlahPertemuan] = useState(''); // State baru untuk Jumlah Pertemuan
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-
-    // State untuk hasil Paket Harian
+    
+    // State untuk Paket Harian
     const [rpp, setRpp] = useState('');
     const [lkpd, setLkpd] = useState('');
     const [kisiKisi, setKisiKisi] = useState('');
     const [soal, setSoal] = useState('');
     const [materi, setMateri] = useState('');
+    const [video, setVideo] = useState('');
 
-    // State untuk hasil Perencanaan Tahunan
+    // State untuk Perencanaan Tahunan
     const [prota, setProta] = useState('');
     const [promes, setPromes] = useState('');
 
-    // State untuk UI interaktif
+    // State untuk UI
     const [activeTab, setActiveTab] = useState('rpp');
     const [copiedItem, setCopiedItem] = useState('');
 
+    // --- FUNGSI ---
     const handleCopy = (text, itemName) => {
         if (!text) return;
         navigator.clipboard.writeText(text);
@@ -52,7 +52,6 @@ export default function Home() {
         setTimeout(() => setCopiedItem(''), 2000);
     };
 
-    // Fungsi utama yang akan memanggil fungsi lain berdasarkan mode
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (mode === 'harian') {
@@ -62,25 +61,23 @@ export default function Home() {
         }
     };
 
-    // Fungsi khusus untuk generate Paket Harian
     const handleGenerateHarian = async () => {
         setIsLoading(true);
         setError(null);
-        setRpp(''); setLkpd(''); setKisiKisi(''); setSoal(''); setMateri('');
+        // Reset semua state harian
+        setRpp(''); setLkpd(''); setKisiKisi(''); setSoal(''); setMateri(''); setVideo('');
         setActiveTab('rpp');
 
         const setters = {
-            rpp: setRpp,
-            lkpd: setLkpd,
-            kisiKisi: setKisiKisi, // Perbaikan typo: 'kisiKisi' bukan 'kisikisi'
-            soal: setSoal,
-            materi: setMateri
+            rpp: setRpp, lkpd: setLkpd, kisiKisi: setKisiKisi, 
+            soal: setSoal, materi: setMateri, video: setVideo
         };
         
         await fetchEventSource('/api/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ mataPelajaran, kelas, topik }),
+            // Mengirim data baru ke backend
+            body: JSON.stringify({ mataPelajaran, kelas, topik, subtopik, jumlahPertemuan }),
             onmessage(event) {
                 const parsedData = JSON.parse(event.data);
                 const { type, data } = parsedData;
@@ -93,7 +90,6 @@ export default function Home() {
         });
     };
 
-    // Fungsi khusus untuk generate Perencanaan Tahunan
     const handleGeneratePlanning = async () => {
         setIsLoading(true);
         setError(null);
@@ -118,16 +114,14 @@ export default function Home() {
         });
     };
 
-    const hasHarianResult = rpp || lkpd || kisiKisi || soal || materi;
+    const hasHarianResult = rpp || lkpd || kisiKisi || soal || materi || video;
     const hasTahunanResult = prota || promes;
 
+    // --- TAMPILAN (JSX) ---
     return (
         <div className={styles.container}>
             <main className={styles.main}>
                 <h1 className={styles.title}>🚀 Asisten Guru Cerdas</h1>
-                <div className={styles.subtitle}>
-                    <h2 className={styles.subtitleText}>Membuat Perangkat Ajar dalam hitungan menit dengan bantuan Kecerdasan Artifisial. </h2>
-                </div>                
                 <p className={styles.description}>Pilih jenis dokumen yang ingin Anda buat.</p>
                 
                 <div className={styles.modeSelector}>
@@ -138,8 +132,14 @@ export default function Home() {
                 <form onSubmit={handleSubmit} className={styles.form}>
                     <input type="text" value={mataPelajaran} onChange={(e) => setMataPelajaran(e.target.value)} placeholder="Mata Pelajaran" required />
                     <input type="text" value={kelas} onChange={(e) => setKelas(e.target.value)} placeholder="Kelas" required />
+                    
+                    {/* Input tambahan hanya muncul jika mode 'harian' */}
                     {mode === 'harian' && (
-                        <input type="text" value={topik} onChange={(e) => setTopik(e.target.value)} placeholder="Topik/Materi Pokok" required />
+                        <>
+                            <input type="text" value={topik} onChange={(e) => setTopik(e.target.value)} placeholder="Topik/Materi Pokok" required />
+                            <input type="text" value={subtopik} onChange={(e) => setSubtopik(e.target.value)} placeholder="Sub-Topik (Opsional)" />
+                            <input type="number" value={jumlahPertemuan} onChange={(e) => setJumlahPertemuan(e.target.value)} placeholder="Jumlah Pertemuan (Opsional)" />
+                        </>
                     )}
                     <button type="submit" disabled={isLoading}>{isLoading ? 'Sedang Membuat...' : `✨ Generate ${mode === 'harian' ? 'Paket Mengajar' : 'Perencanaan'}`}</button>
                 </form>
@@ -162,6 +162,7 @@ export default function Home() {
                                 <button className={activeTab === 'kisiKisi' ? styles.activeTab : ''} onClick={() => setActiveTab('kisiKisi')}>Kisi-Kisi</button>
                                 <button className={activeTab === 'soal' ? styles.activeTab : ''} onClick={() => setActiveTab('soal')}>Soal Evaluasi</button>
                                 <button className={activeTab === 'materi' ? styles.activeTab : ''} onClick={() => setActiveTab('materi')}>Materi Ajar</button>
+                                <button className={activeTab === 'video' ? styles.activeTab : ''} onClick={() => setActiveTab('video')}>Rekomendasi Video</button>
                             </div>
                             <div className={styles.tabContent}>
                                 <div className={styles.contentWrapper}>
@@ -170,13 +171,14 @@ export default function Home() {
                                     {activeTab === 'kisiKisi' && <><button onClick={() => handleCopy(kisiKisi, 'kisiKisi')} className={styles.copyButton} title="Salin Teks">{copiedItem === 'kisiKisi' ? <FaCheck color="green" /> : <FaCopy />}</button><VerticalKisiKisi text={kisiKisi} /></>}
                                     {activeTab === 'soal' && <><button onClick={() => handleCopy(soal, 'soal')} className={styles.copyButton} title="Salin Teks">{copiedItem === 'soal' ? <FaCheck color="green" /> : <FaCopy />}</button><ReactMarkdown>{soal}</ReactMarkdown></>}
                                     {activeTab === 'materi' && <><button onClick={() => handleCopy(materi, 'materi')} className={styles.copyButton} title="Salin Teks">{copiedItem === 'materi' ? <FaCheck color="green" /> : <FaCopy />}</button><ReactMarkdown>{materi}</ReactMarkdown></>}
+                                    {activeTab === 'video' && <VideoRecommendations text={video} />}
                                 </div>
                             </div>
                         </div>
                     </>
                 )}
 
-                {/* Area Hasil BARU untuk Perencanaan Tahunan */}
+                {/* Area Hasil untuk Perencanaan Tahunan */}
                 {mode === 'tahunan' && hasTahunanResult && (
                     <>
                         <div className={styles.downloadSection}>

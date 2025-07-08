@@ -14,7 +14,7 @@ function AIStream(stream) {
             const encoder = new TextEncoder();
             let buffer = '';
             
-            const sections = ['RPP', 'LKPD', 'KISI', 'SOAL', 'MATERI'];
+            const sections = ['RPP', 'LKPD', 'KISI', 'SOAL', 'MATERI', 'VIDEO'];
             let sectionIndex = 0;
 
             // Menggunakan for await...of, cara yang paling andal untuk membaca stream
@@ -36,16 +36,12 @@ function AIStream(stream) {
                     const endIndex = buffer.indexOf(endTag);
 
                     if (startIndex !== -1 && endIndex !== -1 && startIndex < endIndex) {
-                        const contentBlock = buffer.substring(startIndex, endIndex);
+                        const content = buffer.substring(startIndex + startTag.length, endIndex).trim();
                         
-                        // --- INI PERBAIKAN UTAMANYA ---
-                        // Membersihkan teks dari tag MULAI sebelum mengirim
-                        const cleanContent = contentBlock.replace(startTag, '').trim();
-
                         let type = currentSectionName.toLowerCase();
                         if (type === 'kisi') type = 'kisiKisi';
 
-                        const payload = { type: type, data: cleanContent };
+                        const payload = { type: type, data: content };
                         controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
                         
                         buffer = buffer.substring(endIndex + endTag.length);
@@ -63,11 +59,42 @@ function AIStream(stream) {
 
 export async function POST(request) {
     try {
-        const { mataPelajaran, kelas, topik } = await request.json();
+        const { mataPelajaran, kelas, topik, subtopik, jumlahPertemuan } = await request.json();
         
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         
-        const prompt = `Buat satu paket mengajar lengkap untuk: Mata Pelajaran: ${mataPelajaran}, Kelas: ${kelas}, Topik: ${topik}. Hasilnya HARUS terdiri dari LIMA bagian yang dipisahkan dengan separator unik.---KONTEN_RPP_MULAI---[Di sini isi Bagian 1: RPP Ringkas, prinsip pembelajaran mendalam dan profil lulusan yang relevan dengan materi.]---KONTEN_RPP_SELESAI--- ---KONTEN_LKPD_MULAI---[Di sini isi Bagian 2: LKPD]---KONTEN_LKPD_SELESAI--- ---KONTEN_KISI_MULAI---[Di sini isi Bagian 3: Kisi-Kisi Soal, buat 15 soal terdiri dari 10 PG dan 5 essai. PENTING: Hasilkan dalam format JSON array yang valid saja, tanpa teks atau penjelasan tambahan. Contoh: [{"No.": "1", "Kompetensi Dasar (KD)": "...", ...}]]---KONTEN_KISI_SELESAI--- ---KONTEN_SOAL_MULAI---[Di sini isi Bagian 4: Soal Evaluasi, soal sesuai dengan kisi-kisi yang dibuat, gunakan format soal Hots literasi dan numerasi, buatkan jawaban dan penjelasan di halaman selanjutnya.]---KONTEN_SOAL_SELESAI--- ---KONTEN_MATERI_MULAI---[Di sini isi Bagian 5: Ringkasan Materi Ajar, terdiri dari poin-poin penting pembelajaran.]---KONTEN_MATERI_SELESAI---`;
+        // Prompt final yang menggunakan tag MULAI dan SELESAI serta meminta JSON untuk Kisi-Kisi
+        const prompt = `Anda adalah seorang ahli kurikulum indonesia dan seorang guru yang kreatif, Buat satu paket mengajar lengkap untuk: 
+        Mata Pelajaran: ${mataPelajaran}, 
+        Kelas: ${kelas}, 
+        Topik: ${topik}${subtopik ? `, Sub-Topik: ${subtopik}` : ''}${jumlahPertemuan ? `, Jumlah Pertemuan: ${jumlahPertemuan}` : ''}. 
+        Hasilnya HARUS terdiri dari ENAM bagian yang dipisahkan dengan separator unik.
+
+        ---KONTEN_RPP_MULAI---
+        [Di sini isi Bagian 1: RPP Ringkas, mengacu pada RPP yang dibuat sebelumnya, 
+        Pastikan untuk menyertakan semua elemen penting seperti tujuan pembelajaran, langkah-langkah pembelajaran, penilaian, dan sumber belajar,
+        masukan komponen pembelajaran mendalam yang mengacu pada prinsip pembelajaran, pengalaman belajar, serta kerangka pembelajaran.]
+        ---KONTEN_RPP_SELESAI--- 
+
+        ---KONTEN_LKPD_MULAI---
+        [Di sini isi Bagian 2: LKPD, mengacu pada RPP yang dibuat sebelumnya.]
+        ---KONTEN_LKPD_SELESAI--- 
+
+        ---KONTEN_KISI_MULAI---
+        [Di sini isi Bagian 3: Kisi-Kisi Soal, jumlah soal 15 terdiri 10 PG 5 Essai. PENTING: Hasilkan dalam format JSON array yang valid saja, tanpa teks atau penjelasan tambahan. Contoh: [{"No.": "1", "Kompetensi Dasar (KD)": "...", ...}]]
+        ---KONTEN_KISI_SELESAI--- 
+
+        ---KONTEN_SOAL_MULAI---
+        [Di sini isi Bagian 4: Soal Evaluasi, jumlah soal 15 terdiri dari 10 PG dan 5 Essai, buatkan jenis soal numerasi literasi dan HOTS, buatkan jawaban dan penjelasannya di halaman selanjutnya.]
+        ---KONTEN_SOAL_SELESAI--- 
+
+        ---KONTEN_MATERI_MULAI---
+        [Di sini isi Bagian 5: Ringkasan Materi Ajar, masukan point utama dari pembelajaran, gunakan bahasa yang mudah dipahami oleh siswa kelas ${kelas}.]
+        ---KONTEN_MATERI_SELESAI--- 
+
+        ---KONTEN_VIDEO_MULAI---
+        Di sini isi Bagian 6: 3 Rekomendasi Video Pembelajaran]
+        ---KONTEN_VIDEO_SELESAI---`;
 
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
         const result = await model.generateContentStream(prompt.replace(/(\r\n|\n|\r)/gm, ""));

@@ -3,68 +3,51 @@
 import React, { useMemo } from 'react';
 import styles from '../app/page.module.css';
 
-/**
- * Komponen ini sekarang bertugas mem-parsing string JSON dari AI
- * dan menampilkannya sebagai tabel HTML yang rapi, sama seperti di file unduhan.
- */
 const VerticalKisiKisi = ({ text }) => {
-  const tableData = useMemo(() => {
-    if (!text || typeof text !== 'string') return null;
+  const parsedData = useMemo(() => {
+    if (!text || typeof text !== 'string') return [];
     
     try {
-      // Logika cerdas untuk menemukan dan mengekstrak JSON dari dalam teks
       const startIndex = text.indexOf('[');
       const endIndex = text.lastIndexOf(']');
 
       if (startIndex > -1 && endIndex > -1) {
         const jsonString = text.substring(startIndex, endIndex + 1);
         const data = JSON.parse(jsonString);
-        
-        if (!Array.isArray(data) || data.length === 0) return null;
-
-        // Ambil header dari kunci (keys) objek pertama di dalam array
-        const headers = Object.keys(data[0]);
-        // Ambil baris data (values) dari setiap objek
-        const rows = data.map(item => Object.values(item));
-
-        return { headers, rows };
+        return Array.isArray(data) ? data : [];
       }
       
-      return null; // Kembalikan null jika tidak ada JSON yang ditemukan
+      return [];
 
     } catch (error) {
       console.error("Gagal mem-parsing JSON untuk kisi-kisi:", text, error);
-      // Fallback jika terjadi error, tampilkan teks mentah agar bisa di-debug
-      return { error: text };
+      return [{ error: "Format data kisi-kisi dari AI tidak valid." }];
     }
   }, [text]);
 
-  // Jangan tampilkan apa-apa jika data masih kosong atau belum valid
-  if (!tableData) {
+  if (parsedData.length === 0) {
     return <p>Menunggu data kisi-kisi...</p>;
   }
 
-  // Tampilkan pesan error jika parsing gagal
-  if (tableData.error) {
-    return <pre>{tableData.error}</pre>;
+  if (parsedData[0]?.error) {
+    return <p className={styles.error}>{parsedData[0].error}</p>;
   }
 
-  // Render data menjadi tabel HTML
   return (
     <div className={styles.tableContainer}>
       <table className={styles.kisiKisiTable}>
         <thead>
           <tr>
-            {tableData.headers.map((header, index) => (
+            {Object.keys(parsedData[0]).map((header, index) => (
               <th key={index}>{header}</th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {tableData.rows.map((row, rowIndex) => (
+          {parsedData.map((row, rowIndex) => (
             <tr key={rowIndex}>
-              {row.map((cell, cellIndex) => (
-                <td key={cellIndex}>{cell}</td>
+              {Object.values(row).map((cell, cellIndex) => (
+                <td key={cellIndex}>{String(cell)}</td>
               ))}
             </tr>
           ))}
