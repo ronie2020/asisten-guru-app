@@ -442,3 +442,28 @@
     80% { background-position: 0 50%, 9px 50%, 18px 50% }
     100% { background-position: 0 50%, 9px 50%, 18px 50% }
 }
+
+/* --- STYLE UNTUK TOMBOL WHATSAPP --- */
+
+.whatsappButton {
+  position: fixed; /* Membuatnya mengambang */
+  bottom: 2rem;
+  right: 2rem;
+  background-color: #25D366; /* Warna hijau WhatsApp */
+  color: white;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%; /* Membuatnya bulat */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem; /* Ukuran ikon */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000; /* Memastikan selalu di atas */
+  transition: transform 0.2s ease-in-out;
+  text-decoration: none;
+}
+
+.whatsappButton:hover {
+  transform: scale(1.1); /* Sedikit membesar saat disentuh mouse */
+}

@@ -4,7 +4,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 import styles from './page.module.css';
-import { FaCopy, FaCheck, FaPaperPlane } from 'react-icons/fa';
+import { FaCopy, FaCheck, FaPaperPlane, FaWhatsapp } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import VerticalKisiKisi from '../components/VerticalKisiKisi';
@@ -186,6 +186,17 @@ export default function Home() {
                 <p className={styles.subtitle}>Buat Paket Mengajar Harian atau Perencanaan Tahunan dengan Mudah</p>
                 <p className={styles.description}>Pilih jenis dokumen yang ingin Anda buat.</p>
                 
+                 {/* --- 2. TAMBAHKAN TOMBOL WHATSAPP DI SINI --- */}
+                <a
+                    href="https://wa.me/6289635897232?text=Halo,%20saya%20ingin%20bertanya%20tentang%20Aplikasi%20Asisten%20Guru%20Cerdas."
+                    className={styles.whatsappButton}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Hubungi Pengembang"
+                >
+                    <FaWhatsapp />
+                </a>
+
                 <div className={styles.modeSelector}>
                     <button className={`${styles.modeButton} ${mode === 'harian' ? styles.activeMode : ''}`} onClick={() => setMode('harian')}>Paket Mengajar Harian</button>
                     <button className={`${styles.modeButton} ${mode === 'tahunan' ? styles.activeMode : ''}`} onClick={() => setMode('tahunan')}>Perencanaan Tahunan & Semester</button>
@@ -288,6 +299,9 @@ export default function Home() {
                         </div>
                     </>
                 )}
+
+               
+
             </main>
         </div>
     );
