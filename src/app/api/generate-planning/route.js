@@ -36,8 +36,9 @@ export async function POST(request) {
         
         // Prompt khusus untuk meminta Prota dan Promes
         const prompt = `
-            Anda adalah seorang ahli kurikulum senior di Indonesia.
+            Anda adalah seorang ahli kurikulum senior di Indonesia dan seorang guru kreatif.
             Buatlah perencanaan pembelajaran lengkap untuk satu tahun ajaran.
+            buatkan mengacu pada Kurikulum Merdeka, dengan fokus pada mata pelajaran ${mataPelajaran} untuk kelas ${kelas}.
 
             Detail:
             - Mata Pelajaran: ${mataPelajaran}
@@ -45,12 +46,12 @@ export async function POST(request) {
 
             Tolong hasilkan DUA bagian berikut, dan pisahkan setiap bagian HANYA dengan separator unik '---SEPARATOR_BARU---'.
 
-            Bagian 1: Program Tahunan (Prota).
+            Bagian 1: Program Tahunan (Prota), pastikan mengacu pada kurikulum terbaru.
             Buat dalam format tabel markdown. Kolom yang dibutuhkan: Semester, Kompetensi Dasar (KD) / Tujuan Pembelajaran (TP), dan Alokasi Waktu (dalam Jam Pelajaran).
 
             ---SEPARATOR_BARU---
 
-            Bagian 2: Program Semester (Promes) untuk Semester Ganjil.
+            Bagian 2: Program Semester (Promes) untuk Semester Ganjil, mengacu pada kurikulum terbaru.
             Buat dalam format tabel markdown. Kolom yang dibutuhkan: Kompetensi Dasar (KD) / Tujuan Pembelajaran (TP), Materi Pokok, dan alokasi per bulan (Juli, Agustus, September, Oktober, November, Desember).
         `;
 
