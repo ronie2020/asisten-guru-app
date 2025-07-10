@@ -63,11 +63,27 @@
 
 /* --- Form Input --- */
 .form {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 600px;
+  display: grid;
+  /* Secara default 1 kolom untuk mobile */
+  grid-template-columns: 1fr; 
   gap: 1rem;
+  width: 100%;
+  max-width: 800px; /* Kita lebarkan sedikit agar muat 2 kolom */
+}
+
+/* Aturan untuk layar yang lebih besar (tablet ke atas) */
+@media (min-width: 768px) {
+  .form {
+    /* Ubah menjadi 2 kolom dengan lebar yang sama */
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Buat input Topik, Sub-Topik, dan Tombol span 2 kolom */
+  .form input[placeholder*="Topik"],
+  .form input[placeholder*="Pertemuan"],
+  .form button {
+    grid-column: 1 / -1; /* Span dari kolom pertama sampai terakhir */
+  }
 }
 
 .form input {

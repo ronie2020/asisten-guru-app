@@ -183,6 +183,7 @@ export default function Home() {
         <div className={styles.container}>
             <main className={styles.main}>
                 <h1 className={styles.title}>🚀 Asisten Guru Cerdas</h1>
+                <p className={styles.subtitle}>Buat Paket Mengajar Harian atau Perencanaan Tahunan dengan Mudah</p>
                 <p className={styles.description}>Pilih jenis dokumen yang ingin Anda buat.</p>
                 
                 <div className={styles.modeSelector}>
@@ -190,18 +191,25 @@ export default function Home() {
                     <button className={`${styles.modeButton} ${mode === 'tahunan' ? styles.activeMode : ''}`} onClick={() => setMode('tahunan')}>Perencanaan Tahunan & Semester</button>
                 </div>
 
-                <form onSubmit={handleSubmit} className={styles.form}>
-                    <input type="text" value={mataPelajaran} onChange={(e) => setMataPelajaran(e.target.value)} placeholder="Mata Pelajaran" required />
-                    <input type="text" value={kelas} onChange={(e) => setKelas(e.target.value)} placeholder="Kelas" required />
-                    {mode === 'harian' && (
-                        <>
+                 <form onSubmit={handleSubmit} className={styles.form}>
+                        <input type="text" value={mataPelajaran} onChange={(e) => setMataPelajaran(e.target.value)} placeholder="Mata Pelajaran" required />
+                        <input type="text" value={kelas} onChange={(e) => setKelas(e.target.value)} placeholder="Kelas" required />
+                        
+                        {/* Setiap input sekarang menjadi anak langsung dari form */}
+                        {mode === 'harian' && 
                             <input type="text" value={topik} onChange={(e) => setTopik(e.target.value)} placeholder="Topik/Materi Pokok" required />
+                            
+                        }
+                        {mode === 'harian' && 
                             <input type="text" value={subtopik} onChange={(e) => setSubtopik(e.target.value)} placeholder="Sub-Topik (Opsional)" />
+                        }
+                        {mode === 'harian' && 
                             <input type="number" value={jumlahPertemuan} onChange={(e) => setJumlahPertemuan(e.target.value)} placeholder="Jumlah Pertemuan (Opsional)" />
-                        </>
-                    )}
-                    <button type="submit" disabled={isLoading}>{isLoading ? 'Sedang Membuat...' : `✨ Generate ${mode === 'harian' ? 'Paket Mengajar' : 'Perencanaan'}`}</button>
-                </form>
+                        }
+
+                        <button type="submit" disabled={isLoading}>{isLoading ? 'Sedang Membuat...' : `✨ Generate ${mode === 'harian' ? 'Paket Mengajar' : 'Perencanaan'}`}</button>
+                    </form>
+
 
                 {error && <p className={styles.error}>{error}</p>}
                 

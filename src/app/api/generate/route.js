@@ -93,7 +93,7 @@ export async function POST(request) {
         ---KONTEN_MATERI_SELESAI--- 
 
         ---KONTEN_VIDEO_MULAI---
-        Di sini isi Bagian 6: 3 Rekomendasi Video Pembelajaran, carikan rekomendasi video mengacu pada materi yang sedang di bahas, apabila tidak ada yang sesuai, pilihkan judul video yang mengacu pada topik pembelajaran atau materi belajar.]
+        Di sini isi Bagian 6: 5 Rekomendasi Video Pembelajaran, carikan rekomendasi video yang sesuai dengan materi yang sedang di bahas.]
         ---KONTEN_VIDEO_SELESAI---`;
 
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
