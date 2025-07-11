@@ -1,64 +1,36 @@
 // src/components/ImageGenerator.js
 'use client';
 
-import { useState } from 'react';
+import React from 'react'; // Tidak perlu useState lagi
 import styles from '../app/page.module.css';
-import { FaImage, FaSpinner } from 'react-icons/fa';
+import { FaSearch } from 'react-icons/fa'; // Menggunakan ikon pencarian
 
+/**
+ * Komponen ini sekarang tidak membuat gambar, tetapi membuat link pencarian
+ * ke Google Images berdasarkan prompt yang diberikan.
+ */
 const ImageGenerator = ({ prompt }) => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [imageUrl, setImageUrl] = useState(null);
-    const [error, setError] = useState(null);
-
-    const handleGenerate = async () => {
-        setIsLoading(true);
-        setError(null);
-        setImageUrl(null);
-
-        try {
-            const response = await fetch('/api/generate-image', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt }),
-            });
-
-            if (!response.ok) {
-                throw new Error('Gagal membuat gambar.');
-            }
-
-            const data = await response.json();
-            setImageUrl(data.imageUrl);
-
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    
+    // Membuat URL pencarian Google Images yang aman
+    const googleSearchUrl = `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(prompt)}`;
 
     return (
         <div className={styles.imageGeneratorContainer}>
-            {imageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={imageUrl} alt={prompt} className={styles.generatedImage} />
-            ) : (
-                <div className={styles.imagePlaceholder}>
-                    <div className={styles.imageIcon}><FaImage /></div>
-                    {/* Menggunakan kutip tunggal untuk menghindari error linter */}
-                    <p className={styles.imagePromptDesc}>{prompt}</p>
-                    {isLoading ? (
-                        <div className={styles.loadingSpinner}>
-                            <FaSpinner className={styles.spinnerIcon} />
-                            <span>Membuat gambar...</span>
-                        </div>
-                    ) : (
-                        <button onClick={handleGenerate} className={styles.generateImageButton}>
-                            Generate Gambar
-                        </button>
-                    )}
-                    {error && <p className={styles.imageError}>{error}</p>}
-                </div>
-            )}
+            <div className={styles.imagePlaceholder}>
+                <div className={styles.imageIcon}><FaSearch /></div>
+                <p className={styles.imagePromptDesc}>Saran pencarian gambar:</p>
+                <p className={styles.imagePromptText}>'{prompt}'</p>
+                
+                {/* Tombol ini sekarang adalah sebuah link yang membuka tab baru */}
+                <a 
+                    href={googleSearchUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className={styles.generateImageButton}
+                >
+                    Cari Inspirasi Gambar
+                </a>
+            </div>
         </div>
     );
 };

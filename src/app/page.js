@@ -150,7 +150,7 @@ export default function Home() {
                     return newHistory;
                 });
             },
-            onclose() { setIsLoading(false); },
+            onclose() { setIsChatLoading(false); },
             onerror(err) {
                 setChatHistory(prev => {
                     const newHistory = [...prev];

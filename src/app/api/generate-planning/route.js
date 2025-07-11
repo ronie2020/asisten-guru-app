@@ -38,7 +38,7 @@ export async function POST(request) {
         const prompt = `
             Anda adalah seorang ahli kurikulum senior di Indonesia dan seorang guru kreatif.
             Buatlah perencanaan pembelajaran lengkap untuk satu tahun ajaran.
-            Mengacu pada Kurikulum Merdeka, dengan fokus pada mata pelajaran ${mataPelajaran} untuk kelas ${kelas}.
+            Mengacu pada Kurikulum terbaru di indonesia.
 
             Detail:
             - Mata Pelajaran: ${mataPelajaran}

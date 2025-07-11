@@ -467,3 +467,141 @@
 .whatsappButton:hover {
   transform: scale(1.1); /* Sedikit membesar saat disentuh mouse */
 }
+
+
+/* Tambahkan di akhir file src/app/page.module.css */
+
+.imageGeneratorContainer {
+  margin: 2rem 0;
+  border: 2px dashed #dee2e6;
+  border-radius: 12px;
+  padding: 1.5rem;
+  background-color: #fff;
+}
+
+.generatedImage {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.imagePlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #6c757d;
+  min-height: 200px;
+}
+
+.imageIcon {
+  font-size: 3rem;
+  color: #adb5bd;
+  margin-bottom: 1rem;
+}
+
+.imagePromptDesc {
+  font-style: italic;
+  margin-bottom: 1.5rem;
+  max-width: 90%;
+}
+
+.generateImageButton {
+  background-color: #6f42c1; /* Warna ungu */
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.generateImageButton:hover {
+  background-color: #5a359a;
+}
+
+.loadingSpinner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #495057;
+}
+
+.spinnerIcon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.imageError {
+  color: #dc3545;
+  font-weight: 500;
+  margin-top: 1rem;
+}
+
+/* Tambahkan atau ganti style ini di akhir file src/app/page.module.css */
+
+.imageGeneratorContainer {
+  margin: 2rem 0;
+  border: 2px dashed #dee2e6;
+  border-radius: 12px;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+}
+
+.imagePlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: #6c757d;
+}
+
+.imageIcon {
+  font-size: 3rem;
+  color: #adb5bd;
+  margin-bottom: 1rem;
+}
+
+.imagePromptDesc {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #495057;
+}
+
+.imagePromptText {
+  font-style: italic;
+  margin-bottom: 1.5rem;
+}
+
+.generateImageButton {
+  background-color: #0d6efd; /* Warna biru primer */
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-decoration: none; /* Penting untuk tag <a> */
+  display: inline-block; /* Penting untuk tag <a> */
+}
+
+.generateImageButton:hover {
+  background-color: #0b5ed7;
+}
+
+/* Hapus style yang tidak perlu lagi jika ada */
+.loadingSpinner,
+.spinnerIcon,
+.imageError {
+  /* Style ini mungkin tidak diperlukan lagi, tapi tidak masalah jika tetap ada */
+}
