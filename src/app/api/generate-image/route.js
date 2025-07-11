@@ -1,66 +1,52 @@
-// src/components/ImageGenerator.js
-'use client';
+// src/app/api/generate-image/route.js
 
-import { useState } from 'react';
-import styles from '../app/page.module.css';
-import { FaImage, FaSpinner } from 'react-icons/fa';
+// Tidak boleh ada import CSS di file API seperti ini
 
-const ImageGenerator = ({ prompt }) => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [imageUrl, setImageUrl] = useState(null);
-    const [error, setError] = useState(null);
+export async function POST(request) {
+    try {
+        // Menerima prompt dari frontend
+        const { prompt } = await request.json();
 
-    const handleGenerate = async () => {
-        setIsLoading(true);
-        setError(null);
-        setImageUrl(null);
-
-        try {
-            const response = await fetch('/api/generate-image', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt }),
-            });
-
-            if (!response.ok) {
-                throw new Error('Gagal membuat gambar.');
-            }
-
-            const data = await response.json();
-            setImageUrl(data.imageUrl);
-
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setIsLoading(false);
+        if (!prompt) {
+            return new Response(JSON.stringify({ error: "Prompt tidak boleh kosong." }), { status: 400 });
         }
-    };
+        
+        // Menyiapkan payload untuk API Imagen
+        const payload = {
+            instances: [{ prompt: prompt }],
+            parameters: { "sampleCount": 1 }
+        };
 
-    return (
-        <div className={styles.imageGeneratorContainer}>
-            {imageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={imageUrl} alt={prompt} className={styles.generatedImage} />
-            ) : (
-                <div className={styles.imagePlaceholder}>
-                    <div className={styles.imageIcon}><FaImage /></div>
-                    {/* Menggunakan kutip tunggal untuk menghindari peringatan linter */}
-                    <p className={styles.imagePromptDesc}>{prompt}</p>
-                    {isLoading ? (
-                        <div className={styles.loadingSpinner}>
-                            <FaSpinner className={styles.spinnerIcon} />
-                            <span>Membuat gambar...</span>
-                        </div>
-                    ) : (
-                        <button onClick={handleGenerate} className={styles.generateImageButton}>
-                            Generate Gambar
-                        </button>
-                    )}
-                    {error && <p className={styles.imageError}>{error}</p>}
-                </div>
-            )}
-        </div>
-    );
-};
+        const apiKey = process.env.GEMINI_API_KEY || "";
+        // Menggunakan model Imagen yang stabil
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
 
-export default ImageGenerator;
+        // Memanggil API Imagen
+        const apiResponse = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!apiResponse.ok) {
+            const errorBody = await apiResponse.text();
+            console.error("Error dari API Imagen:", errorBody);
+            throw new Error(`Gagal memanggil API Imagen: ${apiResponse.statusText}`);
+        }
+
+        const result = await apiResponse.json();
+
+        // Mengambil data gambar dalam format base64
+        if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
+            const imageUrl = `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
+            // Mengirim URL gambar kembali ke frontend
+            return new Response(JSON.stringify({ imageUrl: imageUrl }), { status: 200 });
+        } else {
+            throw new Error("Respons dari API Imagen tidak mengandung data gambar.");
+        }
+
+    } catch (error) {
+        console.error("Error di API generate-image:", error);
+        return new Response(JSON.stringify({ error: "Gagal membuat gambar." }), { status: 500 });
+    }
+}
