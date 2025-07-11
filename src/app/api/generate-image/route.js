@@ -45,7 +45,7 @@ const ImageGenerator = ({ prompt }) => {
                 <div className={styles.imagePlaceholder}>
                     <div className={styles.imageIcon}><FaImage /></div>
                     {/* Menggunakan kutip tunggal untuk menghindari peringatan linter */}
-                    <p className={styles.imagePromptDesc}>'{prompt}'</p>
+                    <p className={styles.imagePromptDesc}>{prompt}</p>
                     {isLoading ? (
                         <div className={styles.loadingSpinner}>
                             <FaSpinner className={styles.spinnerIcon} />
