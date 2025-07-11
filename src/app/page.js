@@ -9,6 +9,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import VerticalKisiKisi from '../components/VerticalKisiKisi';
 import VideoRecommendations from '../components/VideoRecommendations';
+import ImageGenerator from '../components/ImageGenerator'; // <-- 1. Impor komponen baru
 import { 
     generateRppDocx, 
     generateMateriDocx, 
@@ -41,7 +42,7 @@ export default function Home() {
     const [prota, setProta] = useState('');
     const [promes, setPromes] = useState('');
 
-    // --- STATE UNTUK CHAT ---
+    // State untuk Chat
     const [chatHistory, setChatHistory] = useState([]);
     const [chatInput, setChatInput] = useState('');
     const [isChatLoading, setIsChatLoading] = useState(false);
@@ -79,7 +80,10 @@ export default function Home() {
         setRpp(''); setLkpd(''); setKisiKisi(''); setSoal(''); setMateri(''); setVideo(''); setChatHistory([]);
         setActiveTab('rpp');
 
-        const setters = { rpp: setRpp, lkpd: setLkpd, kisiKisi: setKisiKisi, soal: setSoal, materi: setMateri, video: setVideo };
+        const setters = {
+            rpp: setRpp, lkpd: setLkpd, kisiKisi: setKisiKisi, 
+            soal: setSoal, materi: setMateri, video: setVideo
+        };
         
         await fetchEventSource('/api/generate', {
             method: 'POST',
@@ -119,29 +123,18 @@ export default function Home() {
         });
     };
 
-    // --- FUNGSI CHAT YANG DIPERBARUI TOTAL ---
     const handleChatSubmit = async (e) => {
         e.preventDefault();
         if (!chatInput.trim() || isChatLoading) return;
 
         const newUserMessage = { role: 'user', parts: [{ text: chatInput }] };
-        
-        // Riwayat yang akan dikirim ke API (tanpa placeholder AI)
         const historyForApi = [...chatHistory, newUserMessage];
         
-        // --- PERBAIKAN UTAMA ADA DI SINI ---
-        // Perbarui UI dalam satu kali panggilan: tambahkan pesan pengguna dan placeholder AI
         setChatHistory(prev => [...prev, newUserMessage, { role: 'model', parts: [{ text: '' }] }]);
         setChatInput('');
         setIsChatLoading(true);
 
-        // Menyiapkan konteks dari materi yang sudah ada
-        const context = `
-            Konteks RPP: ${rpp}
-            Konteks LKPD: ${lkpd}
-            Konteks Materi Ajar: ${materi}
-            Konteks Soal: ${soal}
-        `;
+        const context = `Konteks RPP: ${rpp}\nKonteks LKPD: ${lkpd}\nKonteks Materi Ajar: ${materi}\nKonteks Soal: ${soal}`;
 
         await fetchEventSource('/api/chat', {
             method: 'POST',
@@ -149,7 +142,6 @@ export default function Home() {
             body: JSON.stringify({ history: historyForApi, context: context }),
             onmessage(event) {
                 const parsedData = JSON.parse(event.data);
-                // Menambahkan data stream ke pesan AI terakhir di riwayat
                 setChatHistory(prev => {
                     const newHistory = [...prev];
                     if (newHistory.length > 0 && newHistory[newHistory.length - 1].role === 'model') {
@@ -158,11 +150,8 @@ export default function Home() {
                     return newHistory;
                 });
             },
-            onclose() {
-                setIsChatLoading(false);
-            },
+            onclose() { setIsLoading(false); },
             onerror(err) {
-                console.error("Chat EventSource failed:", err);
                 setChatHistory(prev => {
                     const newHistory = [...prev];
                     if (newHistory.length > 0 && newHistory[newHistory.length - 1].role === 'model') {
@@ -179,54 +168,62 @@ export default function Home() {
     const hasHarianResult = rpp || lkpd || kisiKisi || soal || materi || video;
     const hasTahunanResult = prota || promes;
 
+    // --- 2. OBJEK BARU UNTUK CUSTOM RENDERER GAMBAR ---
+    const customRenderers = {
+        // Kita akan merender ulang paragraf (p)
+        p: (paragraph) => {
+            const { node } = paragraph;
+            if (node.children[0] && node.children[0].type === 'text') {
+                const text = node.children[0].value;
+                // Cek apakah teks cocok dengan format placeholder kita
+                const match = text.match(/^\[GAMBAR:\s*(.*?)\]$/);
+                if (match) {
+                    // Jika cocok, ekstrak prompt-nya dan render komponen ImageGenerator
+                    const prompt = match[1];
+                    return <ImageGenerator prompt={prompt} />;
+                }
+            }
+            // Jika tidak cocok, render paragraf seperti biasa
+            return <p>{paragraph.children}</p>;
+        },
+    };
+
+    // --- TAMPILAN (JSX) ---
     return (
         <div className={styles.container}>
             <main className={styles.main}>
                 <h1 className={styles.title}>🚀 Asisten Guru Cerdas</h1>
-                <p className={styles.subtitle}>Buat Paket Mengajar Harian atau Perencanaan Tahunan dengan Mudah</p>
                 <p className={styles.description}>Pilih jenis dokumen yang ingin Anda buat.</p>
                 
-                 {/* --- 2. TAMBAHKAN TOMBOL WHATSAPP DI SINI --- */}
-                <a
-                    href="https://wa.me/6289635897232?text=Halo,%20saya%20ingin%20bertanya%20tentang%20Aplikasi%20Asisten%20Guru%20Cerdas."
-                    className={styles.whatsappButton}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title="Hubungi Pengembang"
-                >
-                    <FaWhatsapp />
-                </a>
-
                 <div className={styles.modeSelector}>
                     <button className={`${styles.modeButton} ${mode === 'harian' ? styles.activeMode : ''}`} onClick={() => setMode('harian')}>Paket Mengajar Harian</button>
                     <button className={`${styles.modeButton} ${mode === 'tahunan' ? styles.activeMode : ''}`} onClick={() => setMode('tahunan')}>Perencanaan Tahunan & Semester</button>
                 </div>
 
-                 <form onSubmit={handleSubmit} className={styles.form}>
-                        <input type="text" value={mataPelajaran} onChange={(e) => setMataPelajaran(e.target.value)} placeholder="Mata Pelajaran" required />
-                        <input type="text" value={kelas} onChange={(e) => setKelas(e.target.value)} placeholder="Kelas" required />
-                        
-                        {/* Setiap input sekarang menjadi anak langsung dari form */}
-                        {mode === 'harian' && 
+                <form onSubmit={handleSubmit} className={styles.form}>
+                    <input type="text" value={mataPelajaran} onChange={(e) => setMataPelajaran(e.target.value)} placeholder="Mata Pelajaran" required />
+                    <input type="text" value={kelas} onChange={(e) => setKelas(e.target.value)} placeholder="Kelas" required />
+                    {mode === 'harian' && (
+                        <>
                             <input type="text" value={topik} onChange={(e) => setTopik(e.target.value)} placeholder="Topik/Materi Pokok" required />
-                            
-                        }
-                        {mode === 'harian' && 
                             <input type="text" value={subtopik} onChange={(e) => setSubtopik(e.target.value)} placeholder="Sub-Topik (Opsional)" />
-                        }
-                        {mode === 'harian' && 
                             <input type="number" value={jumlahPertemuan} onChange={(e) => setJumlahPertemuan(e.target.value)} placeholder="Jumlah Pertemuan (Opsional)" />
-                        }
-
-                        <button type="submit" disabled={isLoading}>{isLoading ? 'Sedang Membuat...' : `✨ Generate ${mode === 'harian' ? 'Paket Mengajar' : 'Perencanaan'}`}</button>
-                    </form>
-
+                        </>
+                    )}
+                    <button type="submit" disabled={isLoading}>{isLoading ? 'Sedang Membuat...' : `✨ Generate ${mode === 'harian' ? 'Paket Mengajar' : 'Perencanaan'}`}</button>
+                </form>
 
                 {error && <p className={styles.error}>{error}</p>}
                 
                 {/* Area Hasil untuk Paket Harian */}
                 {mode === 'harian' && hasHarianResult && (
                     <div className={styles.resultsContainer}>
+                        <div className={styles.downloadSection}>
+                            <button onClick={() => generateRppDocx(rpp)} className={styles.downloadButton}>📄 Download RPP</button>
+                            <button onClick={() => generateMateriDocx(materi)} className={styles.downloadButton}>📚 Download Materi</button>
+                            <button onClick={() => generateLkpdDocx(lkpd)} className={styles.downloadButton}>📋 Download LKPD</button>
+                            <button onClick={() => generateEvaluasiDocx(kisiKisi, soal)} className={styles.downloadButton}>📝 Download Evaluasi</button>
+                        </div>
                         <div className={styles.tabs}>
                             <button className={activeTab === 'rpp' ? styles.activeTab : ''} onClick={() => setActiveTab('rpp')}>RPP</button>
                             <button className={activeTab === 'lkpd' ? styles.activeTab : ''} onClick={() => setActiveTab('lkpd')}>LKPD</button>
@@ -238,11 +235,12 @@ export default function Home() {
                         </div>
                         <div className={styles.tabContent}>
                             <div className={styles.contentWrapper}>
-                                {activeTab === 'rpp' && <><button onClick={() => handleCopy(rpp, 'rpp')} className={styles.copyButton} title="Salin Teks">{copiedItem === 'rpp' ? <FaCheck color="green" /> : <FaCopy />}</button><ReactMarkdown remarkPlugins={[remarkGfm]}>{rpp}</ReactMarkdown></>}
-                                {activeTab === 'lkpd' && <><button onClick={() => handleCopy(lkpd, 'lkpd')} className={styles.copyButton} title="Salin Teks">{copiedItem === 'lkpd' ? <FaCheck color="green" /> : <FaCopy />}</button><ReactMarkdown remarkPlugins={[remarkGfm]}>{lkpd}</ReactMarkdown></>}
+                                {/* --- 3. TERAPKAN CUSTOM RENDERER DI SINI --- */}
+                                {activeTab === 'rpp' && <><button onClick={() => handleCopy(rpp, 'rpp')} className={styles.copyButton} title="Salin Teks">{copiedItem === 'rpp' ? <FaCheck color="green" /> : <FaCopy />}</button><ReactMarkdown components={customRenderers} remarkPlugins={[remarkGfm]}>{rpp}</ReactMarkdown></>}
+                                {activeTab === 'lkpd' && <><button onClick={() => handleCopy(lkpd, 'lkpd')} className={styles.copyButton} title="Salin Teks">{copiedItem === 'lkpd' ? <FaCheck color="green" /> : <FaCopy />}</button><ReactMarkdown components={customRenderers} remarkPlugins={[remarkGfm]}>{lkpd}</ReactMarkdown></>}
                                 {activeTab === 'kisiKisi' && <><button onClick={() => handleCopy(kisiKisi, 'kisiKisi')} className={styles.copyButton} title="Salin Teks">{copiedItem === 'kisiKisi' ? <FaCheck color="green" /> : <FaCopy />}</button><VerticalKisiKisi text={kisiKisi} /></>}
-                                {activeTab === 'soal' && <><button onClick={() => handleCopy(soal, 'soal')} className={styles.copyButton} title="Salin Teks">{copiedItem === 'soal' ? <FaCheck color="green" /> : <FaCopy />}</button><ReactMarkdown remarkPlugins={[remarkGfm]}>{soal}</ReactMarkdown></>}
-                                {activeTab === 'materi' && <><button onClick={() => handleCopy(materi, 'materi')} className={styles.copyButton} title="Salin Teks">{copiedItem === 'materi' ? <FaCheck color="green" /> : <FaCopy />}</button><ReactMarkdown remarkPlugins={[remarkGfm]}>{materi}</ReactMarkdown></>}
+                                {activeTab === 'soal' && <><button onClick={() => handleCopy(soal, 'soal')} className={styles.copyButton} title="Salin Teks">{copiedItem === 'soal' ? <FaCheck color="green" /> : <FaCopy />}</button><ReactMarkdown components={customRenderers} remarkPlugins={[remarkGfm]}>{soal}</ReactMarkdown></>}
+                                {activeTab === 'materi' && <><button onClick={() => handleCopy(materi, 'materi')} className={styles.copyButton} title="Salin Teks">{copiedItem === 'materi' ? <FaCheck color="green" /> : <FaCopy />}</button><ReactMarkdown components={customRenderers} remarkPlugins={[remarkGfm]}>{materi}</ReactMarkdown></>}
                                 {activeTab === 'video' && <VideoRecommendations text={video} />}
                                 {activeTab === 'chat' && (
                                     <div className={styles.chatContainer}>
@@ -260,16 +258,8 @@ export default function Home() {
                                             <div ref={chatEndRef} />
                                         </div>
                                         <form onSubmit={handleChatSubmit} className={styles.chatForm}>
-                                            <input
-                                                type="text"
-                                                value={chatInput}
-                                                onChange={(e) => setChatInput(e.target.value)}
-                                                placeholder="Tanyakan sesuatu untuk menyempurnakan hasil..."
-                                                disabled={isChatLoading}
-                                            />
-                                            <button type="submit" disabled={isChatLoading || !chatInput.trim()}>
-                                                <FaPaperPlane />
-                                            </button>
+                                            <input type="text" value={chatInput} onChange={(e) => setChatInput(e.target.value)} placeholder="Tanyakan sesuatu untuk menyempurnakan hasil..." disabled={isChatLoading} />
+                                            <button type="submit" disabled={isChatLoading || !chatInput.trim()}><FaPaperPlane /></button>
                                         </form>
                                     </div>
                                 )}
@@ -277,7 +267,6 @@ export default function Home() {
                         </div>
                     </div>
                 )}
-
                 {/* Area Hasil untuk Perencanaan Tahunan */}
                 {mode === 'tahunan' && hasTahunanResult && (
                     <>
@@ -292,16 +281,14 @@ export default function Home() {
                             </div>
                             <div className={styles.tabContent}>
                                 <div className={styles.contentWrapper}>
-                                    {activeTab === 'prota' && <><button onClick={() => handleCopy(prota, 'prota')} className={styles.copyButton} title="Salin Teks">{copiedItem === 'prota' ? <FaCheck color="green" /> : <FaCopy />}</button><ReactMarkdown remarkPlugins={[remarkGfm]}>{prota}</ReactMarkdown></>}
-                                    {activeTab === 'promes' && <><button onClick={() => handleCopy(promes, 'promes')} className={styles.copyButton} title="Salin Teks">{copiedItem === 'promes' ? <FaCheck color="green" /> : <FaCopy />}</button><ReactMarkdown remarkPlugins={[remarkGfm]}>{promes}</ReactMarkdown></>}
+                                    {activeTab === 'prota' && <><button onClick={() => handleCopy(prota, 'prota')} className={styles.copyButton} title="Salin Teks">{copiedItem === 'prota' ? <FaCheck color="green" /> : <FaCopy />}</button><ReactMarkdown components={customRenderers} remarkPlugins={[remarkGfm]}>{prota}</ReactMarkdown></>}
+                                    {activeTab === 'promes' && <><button onClick={() => handleCopy(promes, 'promes')} className={styles.copyButton} title="Salin Teks">{copiedItem === 'promes' ? <FaCheck color="green" /> : <FaCopy />}</button><ReactMarkdown components={customRenderers} remarkPlugins={[remarkGfm]}>{promes}</ReactMarkdown></>}
                                 </div>
                             </div>
                         </div>
                     </>
                 )}
-
-               
-
+                <a href="https://wa.me/6289635897232?text=Halo,%20saya%20ingin%20bertanya%20tentang%20Aplikasi%20Asisten%20Guru%20Cerdas." className={styles.whatsappButton} target="_blank" rel="noopener noreferrer" title="Hubungi Pengembang"><FaWhatsapp /></a>
             </main>
         </div>
     );

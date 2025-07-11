@@ -67,17 +67,22 @@ export async function POST(request) {
         const prompt = `Anda adalah seorang ahli kurikulum indonesia dan seorang guru yang kreatif, Buat satu paket mengajar lengkap untuk: 
         Mata Pelajaran: ${mataPelajaran}, 
         Kelas: ${kelas}, 
-        Topik: ${topik}${subtopik ? `, Sub-Topik: ${subtopik}` : ''}${jumlahPertemuan ? `, Jumlah Pertemuan: ${jumlahPertemuan}` : ''}. 
+        Topik Utama: ${topik}${subtopik ? `, Sub-Topik Spesifik: ${subtopik}` : ''}${jumlahPertemuan ? `, Jumlah Pertemuan yang Direncanakan: ${jumlahPertemuan}` : ''}. 
+
+        INSTRUKSI PENTING:
+        - Di dalam bagian RPP, LKPD, dan Materi Ajar, jika ada konsep yang bisa dijelaskan dengan gambar, sisipkan placeholder dengan format [GAMBAR: deskripsi gambar yang sangat detail untuk AI generator gambar].
+        - Contoh placeholder: [GAMBAR: Diagram sel tumbuhan dengan label untuk dinding sel, kloroplas, dan vakuola].
+        
         Hasilnya HARUS terdiri dari ENAM bagian yang dipisahkan dengan separator unik.
 
         ---KONTEN_RPP_MULAI---
-        [Di sini isi Bagian 1: RPP Ringkas, mengacu pada RPP yang dibuat sebelumnya, 
-        Pastikan untuk menyertakan semua elemen penting seperti tujuan pembelajaran, langkah-langkah pembelajaran, penilaian, dan sumber belajar,
+        [Di sini isi Bagian 1: RPP Ringkas, sisipkan placeholder [GAMBAR: ...] jika perlu,
+        Pastikan untuk menyertakan semua elemen penting seperti tujuan pembelajaran, dimensi profil lulusan mengacu pada permendikdasmen no 10. tahun 2025, langkah-langkah pembelajaran, penilaian, dan sumber belajar,
         masukan komponen pembelajaran mendalam yang mengacu pada prinsip pembelajaran, pengalaman belajar, serta kerangka pembelajaran.]
         ---KONTEN_RPP_SELESAI--- 
 
         ---KONTEN_LKPD_MULAI---
-        [Di sini isi Bagian 2: LKPD, mengacu pada RPP yang dibuat sebelumnya.]
+        [Di sini isi Bagian 2: LKPD, sisipkan placeholder [GAMBAR: ...] jika perlu, mengacu pada RPP yang dibuat sebelumnya.]
         ---KONTEN_LKPD_SELESAI--- 
 
         ---KONTEN_KISI_MULAI---
@@ -85,11 +90,11 @@ export async function POST(request) {
         ---KONTEN_KISI_SELESAI--- 
 
         ---KONTEN_SOAL_MULAI---
-        [Di sini isi Bagian 4: Soal Evaluasi, jumlah soal 15 terdiri dari 10 PG dan 5 Essai, buatkan jenis soal numerasi literasi dan HOTS, buatkan jawaban dan penjelasannya di halaman selanjutnya.]
+        [Di sini isi Bagian 4: Soal Evaluasi, sisipkan placeholder [GAMBAR: ...] jika perlu, jumlah soal 15 terdiri dari 10 PG dan 5 Essai, buatkan jenis soal numerasi literasi dan HOTS, buatkan jawaban dan penjelasannya di halaman selanjutnya.]
         ---KONTEN_SOAL_SELESAI--- 
 
         ---KONTEN_MATERI_MULAI---
-        [Di sini isi Bagian 5: Ringkasan Materi Ajar, masukan point utama dari pembelajaran, gunakan bahasa yang mudah dipahami oleh siswa kelas ${kelas}.]
+        [Di sini isi Bagian 5: Ringkasan Materi Ajar, sisipkan placeholder [GAMBAR: ...] jika perlu, masukan point utama dari pembelajaran, gunakan bahasa yang mudah dipahami oleh siswa kelas ${kelas}.]
         ---KONTEN_MATERI_SELESAI--- 
 
         ---KONTEN_VIDEO_MULAI---
