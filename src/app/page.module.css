@@ -600,8 +600,8 @@
 }
 
 /* Hapus style yang tidak perlu lagi jika ada */
-.loadingSpinner,
+/*.loadingSpinner,
 .spinnerIcon,
 .imageError {
   /* Style ini mungkin tidak diperlukan lagi, tapi tidak masalah jika tetap ada */
-}
+/*}

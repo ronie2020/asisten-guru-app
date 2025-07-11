@@ -1,39 +1,53 @@
-// src/components/ImageGenerator.js
-'use client';
+// src/app/api/generate-image/route.js
 
-import React from 'react'; // Tidak perlu useState lagi
-import styles from '../app/page.module.css';
-import { FaSearch } from 'react-icons/fa'; // Menggunakan ikon pencarian
+// Tidak boleh ada import CSS atau komponen React di file API seperti ini.
 
-/**
- * Komponen ini sekarang tidak membuat gambar, tetapi membuat link pencarian
- * ke Google Images berdasarkan prompt yang diberikan.
- */
-const ImageGenerator = ({ prompt }) => {
-    
-    // Membuat URL pencarian Google Images yang aman
-    const googleSearchUrl = `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(prompt)}`;
+export async function POST(request) {
+    try {
+        // Menerima prompt dari frontend
+        const { prompt } = await request.json();
 
-    return (
-        <div className={styles.imageGeneratorContainer}>
-            <div className={styles.imagePlaceholder}>
-                <div className={styles.imageIcon}><FaSearch /></div>
-                <p className={styles.imagePromptDesc}>Saran pencarian gambar:</p>
-                <p className={styles.imagePromptText}>'{prompt}'</p>
-                
-                {/* Tombol ini sekarang adalah sebuah link yang membuka tab baru */}
-                <a 
-                    href={googleSearchUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className={styles.generateImageButton}
-                >
-                    Cari Inspirasi Gambar
-                </a>
-            </div>
-        </div>
-    );
-};
+        if (!prompt) {
+            return new Response(JSON.stringify({ error: "Prompt tidak boleh kosong." }), { status: 400 });
+        }
+        
+        // Menyiapkan payload untuk API Imagen
+        const payload = {
+            instances: [{ prompt: prompt }],
+            parameters: { "sampleCount": 1 }
+        };
 
-export default ImageGenerator;
+        const apiKey = process.env.GEMINI_API_KEY || "";
+        
+        // Menggunakan model Imagen yang stabil dan benar
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
 
+        // Memanggil API Imagen
+        const apiResponse = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!apiResponse.ok) {
+            const errorBody = await apiResponse.json();
+            console.error("Error dari API Imagen:", errorBody);
+            throw new Error(errorBody.error?.message || `Gagal memanggil API Imagen: ${apiResponse.statusText}`);
+        }
+
+        const result = await apiResponse.json();
+
+        // Mengambil data gambar dalam format base64
+        if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
+            const imageUrl = `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
+            // Mengirim URL gambar kembali ke frontend
+            return new Response(JSON.stringify({ imageUrl: imageUrl }), { status: 200 });
+        } else {
+            throw new Error("Respons dari API Imagen tidak mengandung data gambar.");
+        }
+
+    } catch (error) {
+        console.error("Error di API generate-image:", error);
+        return new Response(JSON.stringify({ error: error.message || "Gagal membuat gambar." }), { status: 500 });
+    }
+}
