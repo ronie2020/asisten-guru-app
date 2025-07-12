@@ -599,9 +599,3 @@
   background-color: #0b5ed7;
 }
 
-/* Hapus style yang tidak perlu lagi jika ada */
-/*.loadingSpinner,
-.spinnerIcon,
-.imageError {
-  /* Style ini mungkin tidak diperlukan lagi, tapi tidak masalah jika tetap ada */
-/*}
