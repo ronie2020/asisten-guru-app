@@ -19,7 +19,7 @@ const ImageGenerator = ({ prompt }) => {
             <div className={styles.imagePlaceholder}>
                 <div className={styles.imageIcon}><FaSearch /></div>
                 <p className={styles.imagePromptDesc}>Saran pencarian gambar:</p>
-                <p className={styles.imagePromptText}>'{prompt}'</p>
+                <p className={styles.imagePromptText}>{prompt}</p>
                 
                 {/* Tombol ini sekarang adalah sebuah link yang membuka tab baru */}
                 <a 

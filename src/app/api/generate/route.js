@@ -64,8 +64,7 @@ export async function POST(request) {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         
         // Prompt final yang menggunakan tag MULAI dan SELESAI serta meminta JSON untuk Kisi-Kisi
-        const prompt = `Anda adalah seorang ahli kurikulum indonesia dan seorang guru yang kreatif, 
-        Sangat memahami pembelajaran mendalam, prinsip pembelajaran, pengalaman belajar, serta kerangka pembelajaran, langkah-langkah pembelajaran, penilaian, dan sumber belajar.) 
+        const prompt = `Anda adalah seorang ahli kurikulum indonesia dan seorang guru yang kreatif, dan memahami kurikulum terbaru di indeonesia
         Buat satu paket mengajar lengkap untuk: 
         Mata Pelajaran: ${mataPelajaran}, 
         Kelas: ${kelas}, 
@@ -79,7 +78,7 @@ export async function POST(request) {
 
         ---KONTEN_RPP_MULAI---
         [Di sini isi Bagian 1: RPP Ringkas, sisipkan [GAMBAR: ...] jika perlu,
-        Pastikan untuk menyertakan semua elemen penting seperti tujuan pembelajaran, profil lulusan yang sesuai, prinsip pembelajaran, pengalaman belajar, serta kerangka pembelajaran, langkah-langkah pembelajaran, penilaian, dan sumber belajar.]
+        Pastikan untuk menyertakan semua elemen penting seperti tujuan pembelajaran, profil lulusan yang sesuai (bukan Profil pelajar Pancasila), prinsip pembelajaran, pengalaman belajar, serta kerangka pembelajaran, langkah-langkah pembelajaran, penilaian, dan sumber belajar.]
         ---KONTEN_RPP_SELESAI--- 
 
         ---KONTEN_LKPD_MULAI---
