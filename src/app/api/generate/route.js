@@ -65,7 +65,7 @@ export async function POST(request) {
         
         // Prompt final yang menggunakan tag MULAI dan SELESAI serta meminta JSON untuk Kisi-Kisi
         const prompt = `Anda adalah seorang ahli kurikulum indonesia dan seorang guru yang kreatif, 
-        Sangat memahami pembelajaran mendalam yang meliputi (dimensi profil lulusan (Keimanan dan Ketakwaan kepada Tuhan Yang Maha Esa, Kewargaan, Penalaran Kritis, Kreativitas, Kolaborasi, Kemandirian, Kesehatan, Komunikasi.),prinsip pembelajaran, pengalaman belajar, serta kerangka pembelajaran, langkah-langkah pembelajaran, penilaian, dan sumber belajar.) 
+        Sangat memahami pembelajaran mendalam, prinsip pembelajaran, pengalaman belajar, serta kerangka pembelajaran, langkah-langkah pembelajaran, penilaian, dan sumber belajar.) 
         Buat satu paket mengajar lengkap untuk: 
         Mata Pelajaran: ${mataPelajaran}, 
         Kelas: ${kelas}, 
