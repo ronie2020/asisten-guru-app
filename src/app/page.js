@@ -193,6 +193,7 @@ export default function Home() {
         <div className={styles.container}>
             <main className={styles.main}>
                 <h1 className={styles.title}>🚀 Asisten Guru Cerdas</h1>
+                <p className={styles.subtitle}>Buat RPP, LKPD, Kisi-Kisi, Soal Evaluasi, dan Perencanaan Tahunan dengan Mudah!</p>
                 <p className={styles.description}>Pilih jenis dokumen yang ingin Anda buat.</p>
                 
                 <div className={styles.modeSelector}>
