@@ -78,7 +78,7 @@ export async function POST(request) {
 
         ---KONTEN_RPP_MULAI---
         [Di sini isi Bagian 1: RPP Ringkas, sisipkan placeholder:[GAMBAR: ...] jika perlu,
-        Pastikan untuk menyertakan semua elemen penting seperti tujuan pembelajaran, dimensi profil lulusan yang sesuai (bukan Profil pelajar Pancasila), prinsip pembelajaran, pengalaman belajar, serta kerangka pembelajaran, langkah-langkah pembelajaran, penilaian, dan sumber belajar.]
+        Pastikan untuk menyertakan semua elemen penting seperti tujuan pembelajaran, kemitraan Pembelajaran, Lingkungan Pembelajaran, dimensi profil lulusan yang sesuai (bukan Profil pelajar Pancasila), prinsip pembelajaran, pengalaman belajar utama, serta kerangka pembelajaran, langkah-langkah pembelajaran, penilaian, dan sumber belajar.]
         ---KONTEN_RPP_SELESAI--- 
 
         ---KONTEN_LKPD_MULAI---
